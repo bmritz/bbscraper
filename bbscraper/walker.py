@@ -2,6 +2,7 @@
 
 # from error import ScraperError
 
+
 class ScraperError(Exception):
     """
     ScraperError is used to raise library specific errors.
@@ -13,13 +14,14 @@ class ScraperError(Exception):
     def __str__(self):
         return repr(self.value)
 
+
 class ThreadWalker(object):
     """
     ThreadWalker is used to walk the parsed HTML tree.
     """
 
     # Initial CSS selector used to find valid post nodes
-    SELECTOR = "table.forumline > tr > td > table"
+    SELECTOR = ".post"
 
     # number of ancestors nodes in the tree to reach the post tr node
     PARENT_NODES = 5
@@ -61,11 +63,11 @@ class ThreadWalker(object):
     # map is used to lookup and map table elements
     # of valid post nodes in the parsed HTML tree
     def map(self, post):
-        nodes = post.select("span.postbody")
+        nodes = post.select(".postbody")
         if len(nodes) == 0:
             return None
 
-        node = nodes[0] # fetch first child node
+        node = nodes[0]  # fetch first child node
         for _ in range(ThreadWalker.PARENT_NODES):
             if node == None:
                 raise ScraperError("Cannot find post parent node in HTML tree")
