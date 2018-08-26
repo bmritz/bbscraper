@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 
 from bs4 import BeautifulSoup
-from fetcher import Fetcher
-from walker import ThreadWalker
-from extractors import UserExtractor, PostIDExtractor, CreationDateExtractor, PostDataExtractor
+from .fetcher import Fetcher
+from .walker import ThreadWalker
+from .extractors import UserExtractor, PostIDExtractor, CreationDateExtractor, PostDataExtractor
 
 # extract_post_data is used to extract post specific data.
 # Currently its an static, field specific implementation.
