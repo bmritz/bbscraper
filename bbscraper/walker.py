@@ -58,19 +58,4 @@ class ThreadWalker(object):
         return self.posts
 
     def map_valid_posts(self, entries):
-        return list(filter(lambda x: x != None, map(self.map, entries)))
-
-    # map is used to lookup and map table elements
-    # of valid post nodes in the parsed HTML tree
-    def map(self, post):
-        nodes = post.select(".postbody")
-        if len(nodes) == 0:
-            return None
-
-        node = nodes[0]  # fetch first child node
-        for _ in range(ThreadWalker.PARENT_NODES):
-            if node == None:
-                raise ScraperError("Cannot find post parent node in HTML tree")
-            node = node.parent
-
-        return node
+        return list(filter(lambda x: x != None, entries))
