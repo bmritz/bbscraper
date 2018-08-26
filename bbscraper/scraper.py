@@ -10,6 +10,8 @@ from .extractors import UserExtractor, PostIDExtractor, CreationDateExtractor, P
 #
 # Without too much effort extractor functions could be dynamically registered
 # as sort of plugins to extend functionality for the data extraction process.
+
+
 def extract_post_data(post_tree):
     # Post author name
     username = UserExtractor(post_tree).extract()
@@ -24,7 +26,8 @@ def extract_post_data(post_tree):
     content = PostDataExtractor(post_tree).extract()
 
     # Return fields list in specific order (could be dictionary for semantic convenience)
-    return [ post_id, username, date, content ]
+    return [post_id, username, date, content]
+
 
 class Scraper(object):
     """
@@ -38,13 +41,13 @@ class Scraper(object):
     # This could be automatically inferred based on the first
     # page number of posts, but is something that is not
     # prone to change too much.
-    PAGE_SIZE = 15
+    PAGE_SIZE = 50
 
     # Only HTML parsing for now
     PARSER = "html.parser"
 
     def __init__(self, writer):
-        self.writer = writer # current only supports CSV as writer
+        self.writer = writer  # current only supports CSV as writer
 
     def scrape(self, url, page=0, recur=True):
         # Fetch and parse the forum thread page
@@ -66,7 +69,7 @@ class Scraper(object):
         return Fetcher(url).fetch()
 
     def parse(self, html):
-        return BeautifulSoup(html, Scraper.PARSER) # only HTML syntax supported for now
+        return BeautifulSoup(html, Scraper.PARSER)  # only HTML syntax supported for now
 
     def extract(self, tree):
         return [extract_post_data(post_tree) for post_tree in ThreadWalker(tree)]
