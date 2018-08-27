@@ -48,6 +48,7 @@ class Scraper(object):
 
     def __init__(self):
         # self.writer = writer  # current only supports CSV as writer
+        self.test = 0
 
     def scrape(self, url, page=0, recur=True):
         # Fetch and parse the forum thread page
