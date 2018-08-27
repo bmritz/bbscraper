@@ -46,26 +46,33 @@ class Scraper(object):
     # Only HTML parsing for now
     PARSER = "html.parser"
 
-    def __init__(self, writer):
-        self.writer = writer  # current only supports CSV as writer
+    def __init__(self):
+        # self.writer = writer  # current only supports CSV as writer
 
     def scrape(self, url, page=0, recur=True):
         # Fetch and parse the forum thread page
         tree = self.parse(self.fetch(url, page))
         # Walk the thread HTML parsed tree and extract posts data
         posts = self.extract(tree)
+
+        for post in posts:
+            yield post
         # Serialize posts data as CSV entries
-        self.writer.writerows(posts)
+        # self.writer.writerows(posts)
         # Recursively process subsequent thread pages, if necessary
         if recur:
             self.scrape_subpages(tree, url)
 
     def scrape_subpages(self, tree, url):
         pages = self.num_pages(tree) - 1
-        [self.scrape(url, num + 1, False) for num in range(pages) if pages > 0]
+        if pages <= 0:
+            raise ValueError
+        for num in range(pages):
+            for post in self.scrape(url=url, page=num + 1, recur=False):
+                yield post
 
     def fetch(self, url, page):
-        url = url + '&start=' + str(Scraper.PAGE_SIZE * page)
+        url = url + '&start=' + str(self.PAGE_SIZE * page)
         return Fetcher(url).fetch()
 
     def parse(self, html):
@@ -77,5 +84,5 @@ class Scraper(object):
     # num_pages is used to obtain the number
     # of pages of the current scraped forum thread
     def num_pages(self, tree):
-        pages = tree.select("span.nav > b")
-        return 0 if len(pages) == 0 else int(pages.pop().get_text())
+        pages = tree.find_all('div', attrs={'class': 'pagination'})[0].find_all("strong")[1].text
+        return 0 if len(pages) == 0 else int(pages)
